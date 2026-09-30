@@ -59,7 +59,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
             >
               {ICONS[t.tone]}
               <span className="text-[13px] text-[var(--color-ink)]">{t.message}</span>
-              <button onClick={() => dismiss(t.id)} className="ml-2 text-[var(--color-ink-faint)] hover:text-[var(--color-ink)]">
+              <button onClick={() => dismiss(t.id)} aria-label="Dismiss notification" className="ml-2 text-[var(--color-ink-faint)] hover:text-[var(--color-ink)]">
                 <X size={14} />
               </button>
             </motion.div>

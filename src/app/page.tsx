@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Sparkles, MessageCircleQuestion, Check } from "lucide-react";
 import { PrimaryCTA, ExploreCardsCTA } from "@/components/landing/LandingCTAs";
 import { CircularScore } from "@/components/ui/CircularScore";
+import { SiteFooter } from "@/components/layout/SiteFooter";
 
 export default function LandingPage() {
   return (
@@ -23,6 +24,7 @@ export default function LandingPage() {
         </div>
       </header>
 
+      <main id="main-content">
       {/* Hero */}
       <section className="mx-auto max-w-4xl px-5 pb-20 pt-14 text-center lg:pt-20">
         <p className="mb-4 inline-flex items-center gap-1.5 rounded-full border border-[var(--color-border)] px-3.5 py-1.5 text-[12px] font-medium text-[var(--color-ink-soft)]">
@@ -189,10 +191,9 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <footer className="border-t border-[var(--color-border)] px-5 py-8 text-center text-[12px] text-[var(--color-ink-faint)]">
-        Strata is an educational prototype. Recommendations are personalized guidance, not financial advice or a guarantee of
-        approval. Credit decisions are made solely by issuers.
-      </footer>
+      </main>
+
+      <SiteFooter />
     </div>
   );
 }

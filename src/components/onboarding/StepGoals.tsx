@@ -86,6 +86,7 @@ export function StepGoals({
                       goals: p.goals.map((g) => (g.id === "target_card" ? { ...g, targetCardId: undefined } : g)),
                     }))
                   }
+                  aria-label={`Remove ${getCard(targetGoal.targetCardId)?.name} as target card`}
                   className="text-[var(--color-ink-faint)] hover:text-[var(--color-danger)]"
                 >
                   <X size={15} />

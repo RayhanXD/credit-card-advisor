@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { DEMO_PERSONAS } from "@/data/personas";
 import { ArrowRight } from "lucide-react";
@@ -18,6 +19,17 @@ export function StepWelcome({ onStart, onDemo }: { onStart: () => void; onDemo: 
           Build My Strategy
         </Button>
       </div>
+      <p className="mx-auto mt-3 max-w-sm text-[11.5px] text-[var(--color-ink-faint)]">
+        By continuing, you agree to Strata&rsquo;s{" "}
+        <Link href="/terms" target="_blank" className="underline hover:text-[var(--color-ink-soft)]">
+          Terms of Service
+        </Link>{" "}
+        and{" "}
+        <Link href="/privacy" target="_blank" className="underline hover:text-[var(--color-ink-soft)]">
+          Privacy Policy
+        </Link>
+        .
+      </p>
 
       <div className="mt-14 border-t border-[var(--color-border)] pt-6">
         <p className="mb-3 text-[12px] font-medium uppercase tracking-wide text-[var(--color-ink-faint)]">

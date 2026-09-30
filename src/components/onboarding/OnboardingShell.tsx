@@ -53,7 +53,7 @@ export function OnboardingShell({
         />
       </div>
 
-      <div className="flex flex-1 items-start justify-center px-5 py-10 lg:py-16">
+      <main id="main-content" className="flex flex-1 items-start justify-center px-5 py-10 lg:py-16">
         <div className={cn("w-full", wide ? "max-w-2xl" : "max-w-lg")}>
           <AnimatePresence mode="wait">
             <motion.div
@@ -67,7 +67,7 @@ export function OnboardingShell({
             </motion.div>
           </AnimatePresence>
         </div>
-      </div>
+      </main>
     </div>
   );
 }

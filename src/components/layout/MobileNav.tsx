@@ -78,7 +78,7 @@ export function MobileNav() {
             >
               <div className="mb-3 flex items-center justify-between">
                 <span className="text-[14px] font-semibold">More</span>
-                <button onClick={() => setMoreOpen(false)} className="rounded-lg p-1.5 hover:bg-[var(--color-bg-subtle)]">
+                <button onClick={() => setMoreOpen(false)} aria-label="Close menu" className="rounded-lg p-1.5 hover:bg-[var(--color-bg-subtle)]">
                   <X size={18} />
                 </button>
               </div>

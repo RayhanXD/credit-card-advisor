@@ -29,7 +29,7 @@ export function TagInput({
         {values.map((v) => (
           <span key={v} className="flex items-center gap-1 rounded-full bg-[var(--color-bg-subtle)] px-2.5 py-1 text-[12.5px] font-medium text-[var(--color-ink)]">
             {v}
-            <button onClick={() => onChange(values.filter((x) => x !== v))} className="text-[var(--color-ink-faint)] hover:text-[var(--color-danger)]">
+            <button onClick={() => onChange(values.filter((x) => x !== v))} aria-label={`Remove ${v}`} className="text-[var(--color-ink-faint)] hover:text-[var(--color-danger)]">
               <X size={11} />
             </button>
           </span>

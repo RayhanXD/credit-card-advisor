@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAppStore } from "@/lib/store";
 import { useTheme } from "@/lib/useTheme";
@@ -142,6 +143,27 @@ export default function SettingsPage() {
         <Button variant="danger" icon={<Trash2 size={15} />} onClick={() => setResetOpen(true)}>
           Reset my data
         </Button>
+        <p className="text-[12px] text-[var(--color-ink-faint)]">
+          Want your account and data fully deleted instead of just cleared from this browser? Email{" "}
+          <span className="font-mono">[YOUR EMAIL]</span> and we&rsquo;ll process the request within 30 days.
+        </p>
+      </SettingsSection>
+
+      <SettingsSection title="Legal">
+        <div className="flex flex-wrap gap-x-4 gap-y-2 text-[13px]">
+          <Link href="/privacy" target="_blank" className="text-[var(--color-accent)] hover:underline">
+            Privacy Policy
+          </Link>
+          <Link href="/terms" target="_blank" className="text-[var(--color-accent)] hover:underline">
+            Terms of Service
+          </Link>
+          <Link href="/cookies" target="_blank" className="text-[var(--color-accent)] hover:underline">
+            Cookie Policy
+          </Link>
+          <Link href="/refund-policy" target="_blank" className="text-[var(--color-accent)] hover:underline">
+            Refund Policy
+          </Link>
+        </div>
       </SettingsSection>
 
       <Modal open={resetOpen} onClose={() => setResetOpen(false)} title="Reset all data?">

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ISSUERS } from "@/data/issuers";
 import { CREDIT_BUREAUS, OTHER_RESOURCES } from "@/data/contacts";
 import { ExternalLink, Phone, ShieldAlert } from "lucide-react";
@@ -84,6 +85,24 @@ export default function ResourcesPage() {
               <ExternalLink size={14} className="text-[var(--color-ink-faint)]" />
             </a>
           ))}
+        </div>
+      </div>
+
+      <div className="space-y-3">
+        <h2 className="text-[16px] font-semibold">Legal</h2>
+        <div className="flex flex-wrap gap-x-5 gap-y-2 text-[13px]">
+          <Link href="/privacy" target="_blank" className="text-[var(--color-accent)] hover:underline">
+            Privacy Policy
+          </Link>
+          <Link href="/terms" target="_blank" className="text-[var(--color-accent)] hover:underline">
+            Terms of Service
+          </Link>
+          <Link href="/cookies" target="_blank" className="text-[var(--color-accent)] hover:underline">
+            Cookie Policy
+          </Link>
+          <Link href="/refund-policy" target="_blank" className="text-[var(--color-accent)] hover:underline">
+            Refund Policy
+          </Link>
         </div>
       </div>
     </div>
