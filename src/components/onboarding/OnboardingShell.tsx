@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import type { ReactNode } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, Check, Lock } from "lucide-react";
@@ -31,7 +32,9 @@ export function OnboardingShell({
     <div className="flex min-h-dvh flex-col bg-[var(--color-canvas)]">
       <header className="sticky top-0 z-20 border-b border-[var(--color-border)] bg-[color-mix(in_srgb,var(--color-canvas)_85%,transparent)] backdrop-blur-xl">
         <div className="flex items-center justify-between px-5 py-3.5 lg:px-10">
-          <Logo size={28} />
+          <Link href="/" aria-label="Home">
+            <Logo size={28} />
+          </Link>
           <div className="flex items-center gap-1">
             {showBack && (
               <button
