@@ -1,13 +1,14 @@
-import { LegalLayout, LegalSection, Placeholder } from "@/components/legal/LegalLayout";
+import { LegalLayout, LegalSection } from "@/components/legal/LegalLayout";
+import { brandName, operatorName, supportEmail } from "@/lib/site";
 
-export const metadata = { title: "Cookie Policy — Strata" };
+export const metadata = { title: `Cookie Policy — ${brandName}` };
 
 export default function CookiePolicyPage() {
   return (
     <LegalLayout title="Cookie Policy" updated="September 2026">
       <p>
-        This Cookie Policy explains how <Placeholder>[YOUR COMPANY NAME]</Placeholder> uses cookies and similar
-        technologies, including browser local storage, on Strata.
+        This Cookie Policy explains how {operatorName} uses cookies and similar
+        technologies, including browser local storage, on {brandName}.
       </p>
 
       <LegalSection heading="1. What We Use">
@@ -35,7 +36,7 @@ export default function CookiePolicyPage() {
       <LegalSection heading="2. Your Choices">
         <p>
           Most browsers let you block or delete cookies and local storage through their settings. You can also clear
-          Strata&rsquo;s locally stored data at any time from Settings &rarr; Data &amp; Privacy &rarr; Reset my data.
+          {brandName}&rsquo;s locally stored data at any time from Settings &rarr; Data &amp; Privacy &rarr; Reset my data.
           Blocking essential cookies may prevent parts of the Service from working.
         </p>
       </LegalSection>
@@ -45,7 +46,7 @@ export default function CookiePolicyPage() {
       </LegalSection>
 
       <LegalSection heading="4. Contact Us">
-        <p>Questions can be sent to <Placeholder>[YOUR EMAIL]</Placeholder>.</p>
+        <p>Questions can be sent to {supportEmail}.</p>
       </LegalSection>
     </LegalLayout>
   );

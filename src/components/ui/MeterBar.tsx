@@ -3,31 +3,36 @@
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
-type Tone = "accent" | "success" | "warning" | "danger" | "ink";
+type Tone = "accent" | "success" | "warning" | "danger" | "ink" | "teal";
 
-const toneClasses: Record<Tone, string> = {
-  accent: "bg-[var(--color-accent)]",
-  success: "bg-[var(--color-success)]",
-  warning: "bg-[var(--color-warning)]",
-  danger: "bg-[var(--color-danger)]",
-  ink: "bg-[var(--color-ink)]",
+const TONE_VAR: Record<Tone, string> = {
+  accent: "var(--color-mint)",
+  success: "var(--color-mint)",
+  warning: "var(--color-gold-vivid)",
+  danger: "var(--color-coral-vivid)",
+  ink: "var(--color-ink)",
+  teal: "var(--color-teal-vivid)",
 };
 
 export function statusToTone(status: "excellent" | "good" | "fair" | "poor"): Tone {
   if (status === "excellent") return "success";
-  if (status === "good") return "accent";
+  if (status === "good") return "teal";
   if (status === "fair") return "warning";
   return "danger";
 }
 
+// Segmented meter: discrete blocks read as "steps of progress" rather than a
+// precise percentage, which matches how approximate these inputs are.
 export function MeterBar({
   value,
   tone = "accent",
+  segments = 20,
   className,
   ariaLabel,
 }: {
   value: number;
   tone?: Tone;
+  segments?: number;
   className?: string;
   ariaLabel?: string;
 }) {
@@ -37,19 +42,27 @@ export function MeterBar({
     return () => cancelAnimationFrame(id);
   }, [value]);
 
+  const lit = Math.round((display / 100) * segments);
+
   return (
     <div
-      className={cn("h-2 w-full overflow-hidden rounded-full bg-[var(--color-bg-subtle)]", className)}
+      className={cn("flex h-2 w-full gap-[2px]", className)}
       role="progressbar"
       aria-valuenow={Math.round(value)}
       aria-valuemin={0}
       aria-valuemax={100}
       aria-label={ariaLabel}
     >
-      <div
-        className={cn("h-full rounded-full transition-[width] duration-700 ease-out", toneClasses[tone])}
-        style={{ width: `${display}%` }}
-      />
+      {Array.from({ length: segments }, (_, i) => (
+        <span
+          key={i}
+          className="h-full flex-1 rounded-[2px] transition-colors duration-300"
+          style={{
+            background: i < lit ? TONE_VAR[tone] : "var(--color-bg-subtle)",
+            transitionDelay: `${i * 18}ms`,
+          }}
+        />
+      ))}
     </div>
   );
 }

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Plus, SlidersHorizontal, ArrowRight } from "lucide-react";
+import { Plus, SlidersHorizontal, ArrowRight, WalletCards } from "lucide-react";
 import { useAppStore } from "@/lib/store";
 import { getCard } from "@/data/cards";
 import { CreditCardTile } from "@/components/cards/CreditCardTile";
@@ -10,10 +10,10 @@ import { OwnedCardModal } from "@/components/cards/OwnedCardModal";
 import { AddCardModal } from "@/components/cards/AddCardModal";
 import { Button } from "@/components/ui/Button";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { PageHeader } from "@/components/ui/Panel";
 import { useToast } from "@/components/ui/Toast";
 import { estimateCardValue } from "@/lib/engine/value";
-import { formatCurrency } from "@/lib/utils";
-import { WalletCards } from "lucide-react";
+import { cn, formatCurrency, relativeTimeFromMonths } from "@/lib/utils";
 
 export default function MyCardsPage() {
   const profile = useAppStore((s) => s.profile);
@@ -25,54 +25,70 @@ export default function MyCardsPage() {
 
   if (!profile) return null;
 
-  const totalValue = profile.ownedCards.reduce((sum, oc) => {
-    const card = getCard(oc.cardId);
-    return card ? sum + estimateCardValue(card, profile.spending).annualRewardsValue : sum;
-  }, 0);
-  const totalFees = profile.ownedCards.reduce((sum, oc) => sum + (getCard(oc.cardId)?.annualFee ?? 0), 0);
+  const rows = profile.ownedCards
+    .map((oc) => {
+      const card = getCard(oc.cardId);
+      return card ? { oc, card, value: estimateCardValue(card, profile.spending) } : null;
+    })
+    .filter((r): r is NonNullable<typeof r> => r !== null);
+
+  const totalValue = rows.reduce((sum, r) => sum + r.value.annualRewardsValue, 0);
+  const totalFees = rows.reduce((sum, r) => sum + r.card.annualFee, 0);
+  const net = totalValue - totalFees;
 
   const selectedOwned = profile.ownedCards.find((oc) => oc.id === selectedOwnedId);
   const selectedCard = selectedOwned ? getCard(selectedOwned.cardId) : undefined;
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <h1 className="text-[24px] font-semibold tracking-tight">My Cards</h1>
-          <p className="mt-1 text-[14px] text-[var(--color-ink-soft)]">Every card, and what it&rsquo;s actually earning you.</p>
-        </div>
-        <div className="flex gap-2">
-          <Link href="/cards/optimize">
-            <Button variant="secondary" icon={<SlidersHorizontal size={15} />}>
-              Optimize My Wallet
+    <div className="space-y-8">
+      <PageHeader
+        kicker="Wallet"
+        title="My Cards"
+        description="Every card you hold, and what it’s actually earning you."
+        actions={
+          <>
+            <Link href="/cards/optimize">
+              <Button variant="secondary" icon={<SlidersHorizontal size={15} />}>
+                Optimize My Wallet
+              </Button>
+            </Link>
+            <Button icon={<Plus size={16} />} onClick={() => setAddOpen(true)}>
+              Add a card
             </Button>
-          </Link>
-          <Button icon={<Plus size={16} />} onClick={() => setAddOpen(true)}>
-            Add a card
-          </Button>
-        </div>
-      </div>
+          </>
+        }
+      />
 
-      {profile.ownedCards.length > 0 && (
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-          <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-elevated)] px-4 py-3">
-            <p className="text-[11px] uppercase tracking-wide text-[var(--color-ink-faint)]">Cards</p>
-            <p className="text-[19px] font-semibold">{profile.ownedCards.length}</p>
+      {rows.length > 0 && (
+        <section className="grid overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-bg-elevated)] shadow-[var(--shadow-card)] sm:grid-cols-[repeat(3,1fr)_1.4fr]">
+          <Ledger label="Cards" value={String(rows.length)} />
+          <Ledger label="Est. annual value" value={formatCurrency(totalValue)} tone="pos" />
+          <Ledger label="Annual fees" value={formatCurrency(totalFees)} tone={totalFees > 0 ? "neg" : undefined} />
+          <div className="col-span-full flex flex-col justify-center gap-2 border-t border-[var(--color-border)] p-5 sm:col-span-1 sm:border-l sm:border-t-0">
+            <div className="flex items-baseline justify-between">
+              <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-ink-faint)]">Net per year</span>
+              <span className={cn("figure text-[20px] font-semibold", net >= 0 ? "text-[var(--color-accent)]" : "text-[var(--color-coral)]")}>
+                {net >= 0 ? "+" : ""}
+                {formatCurrency(net)}
+              </span>
+            </div>
+            <div className="flex h-2 gap-[2px] overflow-hidden rounded-full">
+              {rows.map((r, i) => (
+                <span
+                  key={r.oc.id}
+                  title={`${r.card.name}: ${formatCurrency(r.value.annualRewardsValue)}`}
+                  style={{ flexGrow: Math.max(r.value.annualRewardsValue, 1), background: `var(--series-${(i % 6) + 1})` }}
+                />
+              ))}
+            </div>
+            <span className="text-[11px] text-[var(--color-ink-faint)]">Share of rewards by card</span>
           </div>
-          <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-elevated)] px-4 py-3">
-            <p className="text-[11px] uppercase tracking-wide text-[var(--color-ink-faint)]">Est. annual value</p>
-            <p className="text-[19px] font-semibold tabular-nums">{formatCurrency(totalValue)}</p>
-          </div>
-          <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-elevated)] px-4 py-3">
-            <p className="text-[11px] uppercase tracking-wide text-[var(--color-ink-faint)]">Total annual fees</p>
-            <p className="text-[19px] font-semibold tabular-nums">{formatCurrency(totalFees)}</p>
-          </div>
-        </div>
+        </section>
       )}
 
-      {profile.ownedCards.length === 0 ? (
+      {rows.length === 0 ? (
         <EmptyState
-          icon={<WalletCards size={28} />}
+          icon={<WalletCards size={22} />}
           title="No cards yet"
           description="Add the cards you already have so every recommendation accounts for them — or check your dashboard for a recommended first card."
           action={
@@ -82,21 +98,44 @@ export default function MyCardsPage() {
           }
         />
       ) : (
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {profile.ownedCards.map((oc) => {
-            const card = getCard(oc.cardId);
-            if (!card) return null;
-            return <CreditCardTile key={oc.id} card={card} onClick={() => setSelectedOwnedId(oc.id)} />;
-          })}
-        </div>
+        <section className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-2 xl:grid-cols-3">
+          {rows.map(({ oc, card, value }, i) => (
+            <div key={oc.id} className="animate-rise space-y-3" style={{ animationDelay: `${i * 60}ms` }}>
+              <CreditCardTile card={card} onClick={() => setSelectedOwnedId(oc.id)} />
+              <div className="flex items-start justify-between gap-3 px-1">
+                <div className="min-w-0">
+                  <p className="truncate text-[13.5px] font-semibold text-[var(--color-ink)]">{card.name}</p>
+                  <p className="text-[12px] text-[var(--color-ink-faint)]">Open {relativeTimeFromMonths(oc.monthsOpen)}</p>
+                </div>
+                <div className="text-right">
+                  <p className={cn("figure text-[13.5px] font-semibold", value.netAnnualValue >= 0 ? "text-[var(--color-accent)]" : "text-[var(--color-coral)]")}>
+                    {value.netAnnualValue >= 0 ? "+" : ""}
+                    {formatCurrency(value.netAnnualValue)}
+                  </p>
+                  <p className="text-[11px] text-[var(--color-ink-faint)]">net / yr</p>
+                </div>
+              </div>
+            </div>
+          ))}
+          <button
+            onClick={() => setAddOpen(true)}
+            className="flex aspect-[1.586] flex-col items-center justify-center gap-2 rounded-[18px] border-2 border-dashed border-[var(--color-border-strong)] text-[13px] font-medium text-[var(--color-ink-faint)] transition-colors hover:border-[var(--color-mint)] hover:bg-[var(--color-accent-soft)] hover:text-[var(--color-ink)]"
+          >
+            <Plus size={20} />
+            Add a card
+          </button>
+        </section>
       )}
 
-      <div className="flex items-center justify-between rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-subtle)] px-5 py-4">
-        <p className="text-[13.5px] text-[var(--color-ink-soft)]">See how these cards compare against what we&rsquo;d recommend next.</p>
-        <Link href="/strategy" className="flex shrink-0 items-center gap-1 text-[13px] font-medium text-[var(--color-accent)]">
-          My Strategy <ArrowRight size={14} />
-        </Link>
-      </div>
+      <Link
+        href="/strategy"
+        className="group flex items-center justify-between gap-4 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-bg-elevated)] px-5 py-4 transition-colors hover:border-[var(--color-border-strong)]"
+      >
+        <p className="text-[13.5px] text-[var(--color-ink-soft)]">See how these cards compare against what we’d recommend next.</p>
+        <span className="flex shrink-0 items-center gap-1 text-[13px] font-semibold text-[var(--color-accent)]">
+          My Strategy <ArrowRight size={14} className="transition-transform group-hover:translate-x-0.5" />
+        </span>
+      </Link>
 
       {selectedOwned && selectedCard && (
         <OwnedCardModal
@@ -122,6 +161,23 @@ export default function MyCardsPage() {
           show(`${card.name} added to your wallet`, "success");
         }}
       />
+    </div>
+  );
+}
+
+function Ledger({ label, value, tone }: { label: string; value: string; tone?: "pos" | "neg" }) {
+  return (
+    <div className="border-b border-r border-[var(--color-border)] p-5 last:border-r-0 sm:border-b-0">
+      <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-ink-faint)]">{label}</p>
+      <p
+        className={cn(
+          "figure mt-2 text-[22px] font-semibold text-[var(--color-ink)]",
+          tone === "pos" && "text-[var(--color-ink)]",
+          tone === "neg" && "text-[var(--color-coral)]"
+        )}
+      >
+        {value}
+      </p>
     </div>
   );
 }

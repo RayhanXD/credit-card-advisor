@@ -6,12 +6,14 @@ import { computeFullStrategy } from "@/lib/engine/strategy";
 import { buildCreditHealthSnapshot } from "@/lib/engine/creditHealth";
 import { estimateCardValue } from "@/lib/engine/value";
 import { getCard } from "@/data/cards";
-import { StatCard } from "@/components/dashboard/StatCard";
 import { CircularScore } from "@/components/ui/CircularScore";
 import { RecommendationCard } from "@/components/cards/RecommendationCard";
+import { CardFace } from "@/components/cards/CreditCardTile";
+import { MilestoneRail } from "@/components/strategy/MilestoneRail";
 import { Disclaimer } from "@/components/ui/Disclaimer";
+import { Kicker, PageHeader, SectionHeading } from "@/components/ui/Panel";
 import { formatCurrency, formatMonthYear } from "@/lib/utils";
-import { ArrowRight, Compass, HeartPulse, Wallet, CalendarClock } from "lucide-react";
+import { ArrowRight, ArrowUpRight, CalendarClock, Plus } from "lucide-react";
 
 function greeting(): string {
   const h = new Date().getHours();
@@ -19,6 +21,9 @@ function greeting(): string {
   if (h < 18) return "Good afternoon";
   return "Good evening";
 }
+
+const linkClass =
+  "group inline-flex items-center gap-1 text-[12.5px] font-semibold text-[var(--color-accent)] transition-colors hover:text-[var(--color-ink)]";
 
 export default function DashboardPage() {
   const profile = useAppStore((s) => s.profile);
@@ -31,129 +36,185 @@ export default function DashboardPage() {
     if (!card) return sum;
     return sum + estimateCardValue(card, profile.spending).annualRewardsValue;
   }, 0);
+  const totalFees = profile.ownedCards.reduce((sum, oc) => sum + (getCard(oc.cardId)?.annualFee ?? 0), 0);
+  const nextCard = strategy.summary.nextStepCardId ? getCard(strategy.summary.nextStepCardId) : undefined;
+  const readinessCard = strategy.readiness ? getCard(strategy.readiness.cardId) : undefined;
+  const today = new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
 
   return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="text-[26px] font-semibold tracking-tight text-[var(--color-ink)] lg:text-[30px]">
-          {greeting()}, {profile.name.split(" ")[0] || "there"}.
-        </h1>
-        <p className="mt-1 text-[14.5px] text-[var(--color-ink-soft)]">Here&rsquo;s your credit strategy.</p>
-      </div>
+    <div className="space-y-10">
+      <PageHeader
+        kicker={today}
+        title={
+          <>
+            {greeting()}, {profile.name.split(" ")[0] || "there"}.
+          </>
+        }
+        description="Here’s where you stand and what to do next."
+      />
 
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <StatCard label="Credit Health" icon={<HeartPulse size={15} className="text-[var(--color-ink-faint)]" />}>
-          <div className="flex items-center gap-3">
-            <CircularScore value={health.overallScore} size={56} strokeWidth={6} tone="success" />
-            <Link href="/credit-health" className="text-[12.5px] font-medium text-[var(--color-accent)]">
-              View breakdown →
+      {/* Position */}
+      <section className="grid gap-4 lg:grid-cols-[1.55fr_1fr]">
+        <div className="relative overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-bg-elevated)] shadow-[var(--shadow-card)]">
+          <div className="bg-grid bg-grid-fade pointer-events-none absolute inset-0" />
+          <div className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-[radial-gradient(circle,color-mix(in_srgb,var(--color-mint)_22%,transparent),transparent_70%)]" />
+          <div className="relative grid h-full gap-6 p-5 sm:grid-cols-[1fr_200px] sm:p-7">
+            <div className="flex flex-col">
+              <Kicker>Current strategy</Kicker>
+              <p className="mt-3 font-display text-[26px] font-semibold leading-[1.1] tracking-[-0.025em] text-[var(--color-ink)] sm:text-[30px]">
+                {strategy.primaryGoalLabel}
+              </p>
+              <p className="mt-2 max-w-md text-[13.5px] leading-relaxed text-[var(--color-ink-soft)]">
+                {strategy.summary.headline !== strategy.primaryGoalLabel
+                  ? strategy.summary.headline
+                  : `${profile.goals.length} goal${profile.goals.length === 1 ? "" : "s"} guiding your path.`}
+              </p>
+              <div className="mt-auto pt-6">
+                <Link href="/strategy" className={linkClass}>
+                  Open full strategy <ArrowRight size={13} className="transition-transform group-hover:translate-x-0.5" />
+                </Link>
+              </div>
+            </div>
+
+            <Link
+              href={nextCard ? `/card-finder/${nextCard.id}` : "/strategy"}
+              className="group flex flex-col gap-3 rounded-[16px] border border-[var(--color-border)] bg-[var(--color-bg-elevated)] p-3 transition-shadow hover:shadow-[var(--shadow-card-hover)]"
+            >
+              <span className="font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-[var(--color-ink-faint)]">Recommended next step</span>
+              {nextCard ? (
+                <>
+                  <CardFace card={nextCard} className="max-w-[220px] transition-transform duration-300 group-hover:-translate-y-0.5 sm:max-w-none" />
+                  <span className="flex items-start justify-between gap-2">
+                    <span className="text-[13px] font-semibold leading-snug text-[var(--color-ink)]">{nextCard.name}</span>
+                    <ArrowUpRight size={15} className="mt-0.5 shrink-0 text-[var(--color-ink-faint)]" />
+                  </span>
+                </>
+              ) : (
+                <span className="text-[13px] text-[var(--color-ink-soft)]">Building your path — see your strategy.</span>
+              )}
             </Link>
           </div>
-        </StatCard>
+        </div>
 
-        <StatCard
-          label="Current Strategy"
-          value={strategy.primaryGoalLabel}
-          sub={strategy.summary.headline !== strategy.primaryGoalLabel ? strategy.summary.headline : `${profile.goals.length} goal${profile.goals.length === 1 ? "" : "s"} guiding your path`}
-          icon={<Compass size={15} className="text-[var(--color-ink-faint)]" />}
-        />
+        <div className="grid grid-cols-2 gap-4">
+          <Link
+            href="/credit-health"
+            className="group flex flex-col items-center rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-bg-elevated)] p-4 text-center shadow-[var(--shadow-card)] transition-shadow hover:shadow-[var(--shadow-card-hover)]"
+          >
+            <span className="self-start font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-[var(--color-ink-faint)]">Credit health</span>
+            <CircularScore value={health.overallScore} size={112} tone={health.overallScore >= 70 ? "success" : "warning"} sublabel="of 100" className="my-2" />
+            <span className="mt-auto text-[12px] font-semibold text-[var(--color-accent)] group-hover:text-[var(--color-ink)]">View breakdown →</span>
+          </Link>
 
-        <StatCard
-          label="Recommended Next Step"
-          value={strategy.summary.nextStepCardId ? getCard(strategy.summary.nextStepCardId)?.name : "—"}
-          sub={
-            <Link href="/strategy" className="font-medium text-[var(--color-accent)]">
-              See why →
+          {strategy.readiness ? (
+            <Link
+              href="/strategy"
+              className="group flex flex-col items-center rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-bg-elevated)] p-4 text-center shadow-[var(--shadow-card)] transition-shadow hover:shadow-[var(--shadow-card-hover)]"
+            >
+              <span className="self-start truncate font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-[var(--color-ink-faint)]">
+                Readiness
+              </span>
+              <CircularScore
+                value={strategy.readiness.overallPercent}
+                size={112}
+                tone={strategy.readiness.overallPercent >= 72 ? "success" : "warning"}
+                threshold={72}
+                label={`${strategy.readiness.overallPercent}%`}
+                sublabel={readinessCard?.name}
+                className="my-2"
+              />
+              <span className="mt-auto text-[12px] font-semibold text-[var(--color-accent)] group-hover:text-[var(--color-ink)]">Full path →</span>
+            </Link>
+          ) : (
+            <Link
+              href="/cards"
+              className="group flex flex-col rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-bg-elevated)] p-4 shadow-[var(--shadow-card)] transition-shadow hover:shadow-[var(--shadow-card-hover)]"
+            >
+              <span className="font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-[var(--color-ink-faint)]">Wallet value</span>
+              <span className="figure mt-auto text-[28px] font-semibold leading-none text-[var(--color-ink)]">{formatCurrency(walletValue)}</span>
+              <span className="mt-1.5 text-[12px] text-[var(--color-ink-faint)]">est. rewards / year</span>
+              <span className="mt-3 flex h-1.5 overflow-hidden rounded-full bg-[var(--color-bg-subtle)]">
+                <span
+                  className="bg-[var(--color-mint)]"
+                  style={{ width: `${walletValue + totalFees > 0 ? (walletValue / (walletValue + totalFees)) * 100 : 0}%` }}
+                />
+                <span className="bg-[var(--color-coral-vivid)]" style={{ width: `${walletValue + totalFees > 0 ? (totalFees / (walletValue + totalFees)) * 100 : 0}%` }} />
+              </span>
+              <span className="mt-1.5 text-[11px] text-[var(--color-ink-faint)]">
+                vs <span className="figure">{formatCurrency(totalFees)}</span> in fees
+              </span>
+            </Link>
+          )}
+        </div>
+      </section>
+
+      {/* Strategy timeline */}
+      <section className="space-y-4">
+        <SectionHeading
+          kicker="Next 24 months"
+          title="Your strategy"
+          action={
+            <Link href="/strategy" className={linkClass}>
+              Full strategy <ArrowRight size={13} className="transition-transform group-hover:translate-x-0.5" />
             </Link>
           }
         />
+        <MilestoneRail entries={strategy.summary.timeline} limit={4} />
+      </section>
 
-        {strategy.readiness ? (
-          <StatCard label={`${getCard(strategy.readiness.cardId)?.name ?? "Goal"} Readiness`}>
-            <div className="flex items-center gap-3">
-              <CircularScore value={strategy.readiness.overallPercent} size={56} strokeWidth={6} tone="accent" />
-              <Link href="/strategy" className="text-[12.5px] font-medium text-[var(--color-accent)]">
-                Full path →
-              </Link>
-            </div>
-          </StatCard>
-        ) : (
-          <StatCard
-            label="Wallet Value"
-            value={formatCurrency(walletValue)}
-            sub="Estimated annual rewards value"
-            icon={<Wallet size={15} className="text-[var(--color-ink-faint)]" />}
-          />
+      <section className="grid gap-6 lg:grid-cols-[1fr_340px]">
+        {strategy.topRecommendation && (
+          <div className="space-y-4">
+            <SectionHeading kicker="Highest fit" title="Top recommendation" />
+            <RecommendationCard recommendation={strategy.topRecommendation} highlight />
+          </div>
         )}
-      </div>
-
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <div className="space-y-4 lg:col-span-2">
-          <div className="flex items-center justify-between">
-            <h2 className="text-[15px] font-semibold">Your Strategy</h2>
-            <Link href="/strategy" className="flex items-center gap-1 text-[12.5px] font-medium text-[var(--color-accent)]">
-              Full strategy <ArrowRight size={13} />
-            </Link>
-          </div>
-          <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-elevated)] p-5">
-            <ol className="space-y-4">
-              {strategy.summary.timeline.slice(0, 4).map((entry, i) => (
-                <li key={entry.label} className="flex gap-3">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[var(--color-bg-subtle)] text-[11.5px] font-semibold text-[var(--color-ink)]">
-                    {i + 1}
-                  </span>
-                  <div>
-                    <p className="text-[13.5px] font-medium text-[var(--color-ink)]">{entry.label}</p>
-                    <p className="text-[13px] text-[var(--color-ink-soft)]">{entry.description}</p>
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </div>
-
-          {strategy.topRecommendation && (
-            <div className="space-y-2">
-              <h2 className="text-[15px] font-semibold">Top Recommendation</h2>
-              <RecommendationCard recommendation={strategy.topRecommendation} highlight />
-            </div>
-          )}
-        </div>
 
         <div className="space-y-4">
-          <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-elevated)] p-5">
-            <div className="mb-3 flex items-center gap-2">
-              <CalendarClock size={15} className="text-[var(--color-ink-faint)]" />
-              <span className="text-[13px] font-medium text-[var(--color-ink)]">Next Review</span>
-            </div>
-            <p className="text-[14px] text-[var(--color-ink-soft)]">{formatMonthYear(profile.nextReviewDate)}</p>
-          </div>
-
-          <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-elevated)] p-5">
-            <p className="mb-3 text-[13px] font-medium text-[var(--color-ink)]">Your wallet</p>
-            <div className="space-y-2">
-              {profile.ownedCards.length === 0 ? (
-                <p className="text-[13px] text-[var(--color-ink-faint)]">No cards yet — see your recommended first card above.</p>
-              ) : (
-                profile.ownedCards.slice(0, 4).map((oc) => {
+          <SectionHeading
+            kicker={`${profile.ownedCards.length} card${profile.ownedCards.length === 1 ? "" : "s"}`}
+            title="Your wallet"
+            action={
+              <Link href="/cards" className={linkClass}>
+                Manage <ArrowRight size={13} className="transition-transform group-hover:translate-x-0.5" />
+              </Link>
+            }
+          />
+          <div className="overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-bg-elevated)] shadow-[var(--shadow-card)]">
+            {profile.ownedCards.length === 0 ? (
+              <div className="p-5">
+                <p className="text-[13px] leading-relaxed text-[var(--color-ink-soft)]">
+                  No cards yet. Your recommended first card is on the left.
+                </p>
+                <Link href="/cards" className={`${linkClass} mt-3`}>
+                  <Plus size={13} /> Add a card you have
+                </Link>
+              </div>
+            ) : (
+              <ul className="divide-y divide-[var(--color-border)]">
+                {profile.ownedCards.slice(0, 4).map((oc) => {
                   const card = getCard(oc.cardId);
                   if (!card) return null;
                   return (
-                    <div key={oc.id} className="flex items-center justify-between text-[13px]">
-                      <span className="text-[var(--color-ink)]">{card.name}</span>
-                      <span className="text-[var(--color-ink-faint)]">{card.annualFee === 0 ? "$0" : `$${card.annualFee}`}</span>
-                    </div>
+                    <li key={oc.id} className="flex items-center gap-3 px-4 py-3">
+                      <CardFace card={card} size="sm" className="w-12 shrink-0" />
+                      <span className="min-w-0 flex-1 truncate text-[13px] font-medium text-[var(--color-ink)]">{card.name}</span>
+                      <span className="figure text-[12px] text-[var(--color-ink-faint)]">{card.annualFee === 0 ? "$0" : `$${card.annualFee}`}</span>
+                    </li>
                   );
-                })
-              )}
+                })}
+              </ul>
+            )}
+            <div className="flex items-center gap-2.5 border-t border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3">
+              <CalendarClock size={14} className="text-[var(--color-teal-vivid)]" />
+              <span className="text-[12.5px] text-[var(--color-ink-soft)]">
+                Next review <span className="font-semibold text-[var(--color-ink)]">{formatMonthYear(profile.nextReviewDate)}</span>
+              </span>
             </div>
-            <Link href="/cards" className="mt-3 inline-flex items-center gap-1 text-[12.5px] font-medium text-[var(--color-accent)]">
-              Manage cards <ArrowRight size={13} />
-            </Link>
           </div>
-
           <Disclaimer />
         </div>
-      </div>
+      </section>
     </div>
   );
 }

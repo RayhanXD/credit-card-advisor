@@ -17,7 +17,7 @@ export function Tooltip({ content, children, className }: { content: ReactNode; 
       {open && (
         <span
           role="tooltip"
-          className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-max max-w-64 -translate-x-1/2 rounded-lg bg-[var(--color-ink)] px-3 py-2 text-[12px] leading-snug text-[var(--color-bg)] shadow-[var(--shadow-popover)]"
+          className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-max max-w-64 -translate-x-1/2 rounded-[10px] bg-[var(--color-ink)] px-3 py-2 text-[12px] leading-snug text-[var(--color-bg-elevated)] shadow-[var(--shadow-popover)]"
         >
           {content}
         </span>

@@ -12,13 +12,25 @@ import { StepSpending } from "@/components/onboarding/StepSpending";
 import { StepGoals } from "@/components/onboarding/StepGoals";
 import { StepTravel } from "@/components/onboarding/StepTravel";
 import { StepComplete } from "@/components/onboarding/StepComplete";
-import { BLANK_PROFILE_TEMPLATE } from "@/data/personas";
 import { getCard } from "@/data/cards";
 import { useAppStore } from "@/lib/store";
+import { LoadingScreen } from "@/components/layout/LoadingScreen";
 import type { UserProfile } from "@/lib/types";
 
 const STEP_KEYS = ["welcome", "financial", "credit", "banking", "cards", "spending", "goals", "travel", "complete"] as const;
 type StepKey = (typeof STEP_KEYS)[number];
+
+const STEP_LABELS: Record<StepKey, string> = {
+  welcome: "Welcome",
+  financial: "Financial picture",
+  credit: "Credit profile",
+  banking: "Relationships",
+  cards: "Current cards",
+  spending: "Spending",
+  goals: "Goals",
+  travel: "Travel",
+  complete: "Your strategy",
+};
 
 const TRAVEL_GOAL_IDS = ["maximize_travel", "airline_miles", "hotel_points", "lounge_access", "travel_protections", "premium_benefits", "chase_ecosystem"];
 
@@ -34,18 +46,26 @@ function isTravelRelevant(profile: UserProfile): boolean {
 
 export default function OnboardingPage() {
   const router = useRouter();
+  const profile = useAppStore((s) => s.profile);
+  const userId = useAppStore((s) => s.userId);
   const loadPersona = useAppStore((s) => s.loadPersona);
-  const updateProfile = useAppStore((s) => s.updateProfile);
   const completeOnboarding = useAppStore((s) => s.completeOnboarding);
   const startFreshOnboarding = useAppStore((s) => s.startFreshOnboarding);
 
-  const [draft, setDraft] = useState<UserProfile>(() => BLANK_PROFILE_TEMPLATE());
+  const [draft, setDraft] = useState<UserProfile | null>(null);
   const [stepIdx, setStepIdx] = useState(0);
 
+  if (profile && userId && !draft) {
+    setDraft({ ...profile, id: userId, onboardingComplete: false });
+  }
+
+  if (!draft) return <LoadingScreen />;
+
+  const currentDraft = draft;
   const currentKey: StepKey = STEP_KEYS[stepIdx];
 
   function effectiveSteps(): StepKey[] {
-    return isTravelRelevant(draft) ? [...STEP_KEYS] : STEP_KEYS.filter((k) => k !== "travel");
+    return isTravelRelevant(currentDraft) ? [...STEP_KEYS] : STEP_KEYS.filter((k) => k !== "travel");
   }
 
   function goNext() {
@@ -61,23 +81,23 @@ export default function OnboardingPage() {
   }
 
   function handleChange(updater: (p: UserProfile) => UserProfile) {
-    setDraft((prev) => updater(prev));
+    setDraft((prev) => (prev ? updater(prev) : prev));
   }
 
-  function handleDemo(personaId: string) {
-    loadPersona(personaId);
+  async function handleDemo(personaId: string) {
+    await loadPersona(personaId);
     router.push("/dashboard");
   }
 
   function handleStart() {
     startFreshOnboarding();
-    setDraft(BLANK_PROFILE_TEMPLATE());
+    const next = useAppStore.getState().profile;
+    if (next) setDraft({ ...next, onboardingComplete: false });
     setStepIdx(1);
   }
 
-  function handleFinish() {
-    updateProfile(() => draft);
-    completeOnboarding();
+  async function handleFinish() {
+    await completeOnboarding(currentDraft);
     router.push("/dashboard");
   }
 
@@ -86,16 +106,16 @@ export default function OnboardingPage() {
   const displayIndex = steps.indexOf(currentKey);
 
   return (
-    <OnboardingShell stepIndex={displayIndex} totalSteps={totalSteps} onBack={goBack} showBack={currentKey !== "welcome"} wide={currentKey === "complete"}>
+    <OnboardingShell stepIndex={displayIndex} totalSteps={totalSteps} stepLabels={steps.map((k) => STEP_LABELS[k])} onBack={goBack} showBack={currentKey !== "welcome"} wide={currentKey === "complete"}>
       {currentKey === "welcome" && <StepWelcome onStart={handleStart} onDemo={handleDemo} />}
-      {currentKey === "financial" && <StepFinancial profile={draft} onChange={handleChange} onNext={goNext} />}
-      {currentKey === "credit" && <StepCreditProfile profile={draft} onChange={handleChange} onNext={goNext} />}
-      {currentKey === "banking" && <StepBanking profile={draft} onChange={handleChange} onNext={goNext} />}
-      {currentKey === "cards" && <StepCards profile={draft} onChange={handleChange} onNext={goNext} />}
-      {currentKey === "spending" && <StepSpending profile={draft} onChange={handleChange} onNext={goNext} />}
-      {currentKey === "goals" && <StepGoals profile={draft} onChange={handleChange} onNext={goNext} />}
-      {currentKey === "travel" && <StepTravel profile={draft} onChange={handleChange} onNext={goNext} />}
-      {currentKey === "complete" && <StepComplete profile={draft} onFinish={handleFinish} />}
+      {currentKey === "financial" && <StepFinancial profile={currentDraft} onChange={handleChange} onNext={goNext} />}
+      {currentKey === "credit" && <StepCreditProfile profile={currentDraft} onChange={handleChange} onNext={goNext} />}
+      {currentKey === "banking" && <StepBanking profile={currentDraft} onChange={handleChange} onNext={goNext} />}
+      {currentKey === "cards" && <StepCards profile={currentDraft} onChange={handleChange} onNext={goNext} />}
+      {currentKey === "spending" && <StepSpending profile={currentDraft} onChange={handleChange} onNext={goNext} />}
+      {currentKey === "goals" && <StepGoals profile={currentDraft} onChange={handleChange} onNext={goNext} />}
+      {currentKey === "travel" && <StepTravel profile={currentDraft} onChange={handleChange} onNext={goNext} />}
+      {currentKey === "complete" && <StepComplete profile={currentDraft} onFinish={() => void handleFinish()} />}
     </OnboardingShell>
   );
 }

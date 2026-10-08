@@ -27,7 +27,7 @@ export function CheckboxCardGroup<T extends string>({
   };
 
   return (
-    <div className={cn("grid gap-2.5", colClass)}>
+    <div className={cn("grid gap-2", colClass)}>
       {options.map((opt) => {
         const selected = value.includes(opt.value);
         return (
@@ -38,27 +38,23 @@ export function CheckboxCardGroup<T extends string>({
             aria-checked={selected}
             onClick={() => toggle(opt.value)}
             className={cn(
-              "flex items-start gap-2.5 rounded-xl border px-4 py-3 text-left transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]",
+              "group flex items-start gap-3 rounded-[var(--radius-control)] border px-3.5 py-3 text-left transition-[border-color,background-color,box-shadow] duration-150",
               selected
-                ? "border-[var(--color-ink)] bg-[var(--color-ink)] text-[var(--color-bg)]"
-                : "border-[var(--color-border)] bg-[var(--color-bg-elevated)] hover:border-[var(--color-border-strong)] hover:bg-[var(--color-bg-subtle)]"
+                ? "border-[var(--color-mint)] bg-[var(--color-accent-soft)] shadow-[0_0_0_3px_color-mix(in_srgb,var(--color-mint)_18%,transparent)]"
+                : "border-[var(--color-border)] bg-[var(--color-bg-elevated)] hover:border-[var(--color-border-strong)]"
             )}
           >
             <span
               className={cn(
-                "mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded border",
-                selected ? "border-[var(--color-bg)] bg-[var(--color-bg)]" : "border-[var(--color-border-strong)]"
+                "mt-[2px] flex h-4 w-4 shrink-0 items-center justify-center rounded-[5px] border-[1.5px] transition-colors",
+                selected ? "border-[var(--color-mint)] bg-[var(--color-mint)]" : "border-[var(--color-border-strong)] group-hover:border-[var(--color-ink-faint)]"
               )}
             >
-              {selected && <Check size={11} className="text-[var(--color-ink)]" strokeWidth={3} />}
+              {selected && <Check size={11} className="text-[#03261a]" strokeWidth={3.5} />}
             </span>
             <span className="flex flex-col gap-0.5">
-              <span className="text-[13.5px] font-medium">{opt.label}</span>
-              {opt.description && (
-                <span className={cn("text-[12px]", selected ? "text-[var(--color-bg)]/70" : "text-[var(--color-ink-faint)]")}>
-                  {opt.description}
-                </span>
-              )}
+              <span className="text-[13.5px] font-medium text-[var(--color-ink)]">{opt.label}</span>
+              {opt.description && <span className="text-[12px] text-[var(--color-ink-faint)]">{opt.description}</span>}
             </span>
           </button>
         );

@@ -4,6 +4,10 @@ import { useState } from "react";
 import { Modal } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
 import { CardAutocomplete } from "@/components/cards/CardAutocomplete";
+import { CardFace } from "@/components/cards/CreditCardTile";
+import { inputClass } from "@/components/ui/TextField";
+import { getIssuer } from "@/data/issuers";
+import { cn } from "@/lib/utils";
 import { getCard } from "@/data/cards";
 import type { CreditCardProduct } from "@/lib/types";
 
@@ -40,8 +44,12 @@ export function AddCardModal({
           <CardAutocomplete excludeIds={excludeIds} onSelect={(card) => setSelected(getCard(card.id) ?? card)} />
         ) : (
           <>
-            <div className="rounded-xl bg-[var(--color-bg-subtle)] px-4 py-3">
-              <p className="text-[14px] font-medium">{selected.name}</p>
+            <div className="flex items-center gap-4 rounded-[14px] bg-[var(--color-bg-subtle)] p-3">
+              <CardFace card={selected} size="sm" className="w-20 shrink-0" />
+              <div className="min-w-0">
+                <p className="truncate text-[14px] font-semibold">{selected.name}</p>
+                <p className="text-[12px] text-[var(--color-ink-faint)]">{getIssuer(selected.issuerId)?.name}</p>
+              </div>
             </div>
             <label className="flex flex-col gap-1.5">
               <span className="text-[13px] font-medium text-[var(--color-ink)]">How many months have you had it?</span>
@@ -50,7 +58,7 @@ export function AddCardModal({
                 min={0}
                 value={monthsOpen}
                 onChange={(e) => setMonthsOpen(Number(e.target.value))}
-                className="h-11 w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-elevated)] px-3 text-[14px] outline-none focus:border-[var(--color-accent)] focus:ring-2 focus:ring-[var(--color-accent)]/20"
+                className={cn(inputClass, "figure px-3.5")}
               />
             </label>
             <div className="flex gap-2">

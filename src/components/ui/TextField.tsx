@@ -1,6 +1,9 @@
 import type { InputHTMLAttributes, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
+export const inputClass =
+  "h-11 w-full rounded-[var(--radius-control)] border border-[var(--color-border)] bg-[var(--color-bg-elevated)] text-[14px] text-[var(--color-ink)] shadow-[var(--shadow-inset)] outline-none transition-[border-color,box-shadow] placeholder:text-[var(--color-ink-faint)] hover:border-[var(--color-border-strong)] focus:border-[var(--color-mint)] focus:shadow-[0_0_0_3px_color-mix(in_srgb,var(--color-mint)_20%,transparent)]";
+
 interface TextFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   hint?: string;
@@ -18,15 +21,7 @@ export function TextField({ label, hint, prefixLabel, className, id, ...props }:
       )}
       <div className="relative flex items-center">
         {prefixLabel && <span className="absolute left-3 text-[13px] text-[var(--color-ink-faint)]">{prefixLabel}</span>}
-        <input
-          id={inputId}
-          className={cn(
-            "h-11 w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-elevated)] text-[14px] text-[var(--color-ink)] outline-none transition-colors placeholder:text-[var(--color-ink-faint)] focus:border-[var(--color-accent)] focus:ring-2 focus:ring-[var(--color-accent)]/20",
-            prefixLabel ? "pl-7 pr-3" : "px-3",
-            className
-          )}
-          {...props}
-        />
+        <input id={inputId} className={cn(inputClass, prefixLabel ? "pl-7 pr-3" : "px-3.5", className)} {...props} />
       </div>
       {hint && <span className="text-[12px] text-[var(--color-ink-faint)]">{hint}</span>}
     </div>

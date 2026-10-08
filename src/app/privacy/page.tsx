@@ -1,14 +1,15 @@
-import { LegalLayout, LegalSection, Placeholder } from "@/components/legal/LegalLayout";
+import { LegalLayout, LegalSection } from "@/components/legal/LegalLayout";
+import { brandName, jurisdiction, operatorName, supportEmail } from "@/lib/site";
 import Link from "next/link";
 
-export const metadata = { title: "Privacy Policy — Strata" };
+export const metadata = { title: `Privacy Policy — ${brandName}` };
 
 export default function PrivacyPolicyPage() {
   return (
     <LegalLayout title="Privacy Policy" updated="September 2026">
       <p>
-        This Privacy Policy describes how <Placeholder>[YOUR COMPANY NAME]</Placeholder> (&ldquo;Strata,&rdquo; &ldquo;we,&rdquo;
-        &ldquo;us&rdquo;) collects, uses, and protects your information when you use the Strata credit card strategy platform
+        This Privacy Policy describes how {operatorName} (&ldquo;{brandName},&rdquo; &ldquo;we,&rdquo;
+        &ldquo;us&rdquo;) collects, uses, and protects your information when you use the {brandName} credit card strategy platform
         (the &ldquo;Service&rdquo;). This policy describes the Service as designed, including account creation and server-side
         data storage; some of these capabilities are part of our ongoing rollout.
       </p>
@@ -66,7 +67,7 @@ export default function PrivacyPolicyPage() {
           <li>With a card issuer, but only when you affirmatively click through to that issuer&rsquo;s own application.</li>
           <li>With service providers who help us operate the Service (hosting, credit bureau connectivity, customer
             support), under confidentiality obligations.</li>
-          <li>When required by law, or to protect the rights, safety, or property of Strata or our users.</li>
+          <li>When required by law, or to protect the rights, safety, or property of {brandName} or our users.</li>
         </ul>
       </LegalSection>
 
@@ -83,7 +84,7 @@ export default function PrivacyPolicyPage() {
           <li>You can access, correct, or export your profile information from Settings at any time.</li>
           <li>
             You can request deletion of your account and associated data by using the in-app data reset option, or by
-            emailing <Placeholder>[YOUR EMAIL]</Placeholder>. We will process deletion requests within 30 days.
+            emailing {supportEmail}. We will process deletion requests within 30 days.
           </li>
           <li>You can opt out of non-essential notifications from Settings.</li>
         </ul>
@@ -99,7 +100,7 @@ export default function PrivacyPolicyPage() {
 
       <LegalSection heading="7. International Users">
         <p>
-          The Service is operated from <Placeholder>[YOUR JURISDICTION]</Placeholder>. If you access the Service from
+          The Service is operated from {jurisdiction}. If you access the Service from
           outside that jurisdiction, your information may be transferred to, stored, and processed there.
         </p>
       </LegalSection>
@@ -113,7 +114,7 @@ export default function PrivacyPolicyPage() {
 
       <LegalSection heading="9. Contact Us">
         <p>
-          Questions about this policy or your data can be sent to <Placeholder>[YOUR EMAIL]</Placeholder>.
+          Questions about this policy or your data can be sent to {supportEmail}.
         </p>
       </LegalSection>
     </LegalLayout>

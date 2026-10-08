@@ -147,6 +147,20 @@ export interface TravelPreferences {
 
 // ---------- User profile (aggregate) ----------
 
+export interface NotificationPrefs {
+  renewals: boolean;
+  readiness: boolean;
+  utilization: boolean;
+  reviews: boolean;
+}
+
+export const DEFAULT_NOTIFICATION_PREFS: NotificationPrefs = {
+  renewals: true,
+  readiness: true,
+  utilization: true,
+  reviews: true,
+};
+
 export interface UserProfile {
   id: string;
   name: string;
@@ -159,6 +173,7 @@ export interface UserProfile {
   onboardingComplete: boolean;
   createdAt: string;
   nextReviewDate: string;
+  notificationPrefs?: NotificationPrefs;
 }
 
 // ---------- Card database ----------

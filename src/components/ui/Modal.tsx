@@ -66,7 +66,7 @@ export function Modal({
       {open && (
         <div className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto p-4 pt-[8vh] sm:p-6 sm:pt-[10vh]">
           <motion.div
-            className="fixed inset-0 bg-black/40 backdrop-blur-[2px]"
+            className="fixed inset-0 bg-[rgba(6,16,12,0.45)] backdrop-blur-[3px]"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -83,21 +83,21 @@ export function Modal({
             exit={{ opacity: 0, y: 8, scale: 0.98 }}
             transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
             className={cn(
-              "relative z-10 w-full rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-elevated)] shadow-[var(--shadow-popover)]",
+              "relative z-10 w-full overflow-hidden rounded-[22px] border border-[var(--color-border)] bg-[var(--color-bg-elevated)] shadow-[var(--shadow-popover)]",
               wide ? "max-w-2xl" : "max-w-md"
             )}
           >
-            <div className="flex items-center justify-between border-b border-[var(--color-border)] px-5 py-4">
-              <h2 className="text-[15px] font-semibold">{title}</h2>
+            <div className="flex items-center justify-between gap-4 border-b border-[var(--color-border)] px-6 py-4">
+              <h2 className="font-display text-[17px] font-semibold tracking-[-0.02em]">{title}</h2>
               <button
                 onClick={onClose}
                 aria-label="Close"
-                className="rounded-lg p-1.5 text-[var(--color-ink-faint)] hover:bg-[var(--color-bg-subtle)] hover:text-[var(--color-ink)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]"
+                className="rounded-[10px] p-1.5 text-[var(--color-ink-faint)] transition-colors hover:bg-[var(--color-bg-subtle)] hover:text-[var(--color-ink)]"
               >
                 <X size={18} />
               </button>
             </div>
-            <div className="max-h-[70vh] overflow-y-auto px-5 py-5">{children}</div>
+            <div className="max-h-[72vh] overflow-y-auto px-6 py-6">{children}</div>
           </motion.div>
         </div>
       )}

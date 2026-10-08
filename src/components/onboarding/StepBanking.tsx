@@ -50,7 +50,7 @@ export function StepBanking({
   return (
     <div>
       <StepHeading
-        eyebrow="Step 4 of 9"
+        eyebrow="Relationships"
         title="Do you already have relationships with these companies?"
         subtitle="Existing banking and card relationships can meaningfully affect which cards make sense next."
       />
@@ -62,39 +62,42 @@ export function StepBanking({
               <button
                 key={issuer.id}
                 onClick={() => toggleIssuer(issuer.id)}
+                aria-pressed={selected}
                 className={cn(
-                  "flex items-center justify-between gap-2 rounded-xl border px-3.5 py-3 text-left transition-colors",
+                  "flex items-center gap-2.5 rounded-[var(--radius-control)] border px-3.5 py-3 text-left transition-[border-color,background-color,box-shadow]",
                   selected
-                    ? "border-[var(--color-ink)] bg-[var(--color-ink)] text-[var(--color-bg)]"
-                    : "border-[var(--color-border)] bg-[var(--color-bg-elevated)] hover:bg-[var(--color-bg-subtle)]"
+                    ? "border-[var(--color-mint)] bg-[var(--color-accent-soft)] shadow-[0_0_0_3px_color-mix(in_srgb,var(--color-mint)_18%,transparent)]"
+                    : "border-[var(--color-border)] bg-[var(--color-bg-elevated)] hover:border-[var(--color-border-strong)]"
                 )}
               >
-                <span className="text-[13px] font-medium">{issuer.name}</span>
-                {selected && <Check size={14} strokeWidth={3} />}
+                <span className="h-3 w-3 shrink-0 rounded-[4px]" style={{ background: issuer.accentColor }} />
+                <span className="flex-1 text-[13px] font-medium text-[var(--color-ink)]">{issuer.name}</span>
+                {selected && <Check size={14} strokeWidth={3} className="text-[var(--color-accent)]" />}
               </button>
             );
           })}
         </div>
 
         {selectedIssuerIds.length > 0 && (
-          <div className="space-y-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-subtle)] p-4">
-            <p className="text-[12px] font-medium uppercase tracking-wide text-[var(--color-ink-faint)]">Tell us a bit more</p>
+          <div className="space-y-2 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-bg-elevated)] p-4 shadow-[var(--shadow-card)]">
+            <p className="font-mono text-[10.5px] uppercase tracking-[0.12em] text-[var(--color-ink-faint)]">Which accounts?</p>
             {selectedIssuerIds.map((issuerId) => {
               const issuer = ISSUERS.find((i) => i.id === issuerId)!;
               const rel = profile.issuerRelationships[issuerId];
               return (
-                <div key={issuerId} className="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-[var(--color-bg-elevated)] px-3 py-2.5">
+                <div key={issuerId} className="flex flex-wrap items-center justify-between gap-2 rounded-[10px] bg-[var(--color-bg-subtle)] px-3 py-2.5">
                   <span className="text-[13px] font-medium">{issuer.name}</span>
                   <div className="flex gap-1.5">
                     {(["checking", "savings", "investment"] as const).map((field) => (
                       <button
                         key={field}
                         onClick={() => toggleField(issuerId, field)}
+                        aria-pressed={!!rel?.[field]}
                         className={cn(
-                          "rounded-full border px-2.5 py-1 text-[11.5px] font-medium capitalize",
+                          "rounded-[7px] border px-2.5 py-1 text-[11.5px] font-medium capitalize transition-colors",
                           rel?.[field]
-                            ? "border-[var(--color-accent)] bg-[var(--color-accent-soft)] text-[var(--color-accent)]"
-                            : "border-[var(--color-border)] text-[var(--color-ink-faint)]"
+                            ? "border-[var(--color-ink)] bg-[var(--color-ink)] text-[var(--color-bg-elevated)]"
+                            : "border-[var(--color-border-strong)] bg-[var(--color-bg-elevated)] text-[var(--color-ink-soft)] hover:text-[var(--color-ink)]"
                         )}
                       >
                         {field}

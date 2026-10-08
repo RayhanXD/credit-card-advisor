@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
+import { Cookie } from "lucide-react";
+import { brandName } from "@/lib/site";
 
 const STORAGE_KEY = "strata-cookie-consent";
 
@@ -35,11 +37,14 @@ export function CookieConsentBanner() {
           transition={{ duration: 0.2 }}
           role="region"
           aria-label="Cookie notice"
-          className="fixed inset-x-0 bottom-0 z-[150] border-t border-[var(--color-border)] bg-[var(--color-bg-elevated)] px-5 py-4 shadow-[var(--shadow-popover)]"
+          className="fixed bottom-4 left-4 right-4 z-[150] mx-auto max-w-xl rounded-[18px] border border-[var(--color-border)] bg-[var(--color-bg-elevated)] p-4 shadow-[var(--shadow-popover)] sm:left-6 sm:right-auto sm:mx-0"
         >
-          <div className="mx-auto flex max-w-6xl flex-col items-center gap-3 sm:flex-row sm:justify-between">
-            <p className="text-[12.5px] text-[var(--color-ink-soft)]">
-              Strata uses local storage and essential cookies to keep you signed in and remember your preferences. See our{" "}
+          <div className="flex items-start gap-3">
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] bg-[var(--color-gold-soft)] text-[var(--color-gold)]">
+              <Cookie size={15} />
+            </span>
+            <p className="flex-1 text-[12.5px] leading-relaxed text-[var(--color-ink-soft)]">
+              {brandName} uses local storage and essential cookies to keep you signed in and remember your preferences. See our{" "}
               <Link href="/cookies" className="font-medium text-[var(--color-accent)]">
                 Cookie Policy
               </Link>
@@ -47,7 +52,7 @@ export function CookieConsentBanner() {
             </p>
             <button
               onClick={dismiss}
-              className="shrink-0 rounded-lg bg-[var(--color-ink)] px-4 py-2 text-[12.5px] font-medium text-[var(--color-bg)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]"
+              className="shrink-0 rounded-[10px] bg-[var(--color-primary)] px-3.5 py-2 text-[12.5px] font-semibold text-[var(--color-primary-ink)] transition-colors hover:bg-[var(--color-primary-hover)]"
             >
               Got it
             </button>

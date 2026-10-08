@@ -5,6 +5,8 @@ import { Search } from "lucide-react";
 import { CARDS } from "@/data/cards";
 import { getIssuer } from "@/data/issuers";
 import type { CreditCardProduct } from "@/lib/types";
+import { CardFace } from "@/components/cards/CreditCardTile";
+import { inputClass } from "@/components/ui/TextField";
 import { cn } from "@/lib/utils";
 
 export function CardAutocomplete({ onSelect, excludeIds = [] }: { onSelect: (card: CreditCardProduct) => void; excludeIds?: string[] }) {
@@ -21,38 +23,41 @@ export function CardAutocomplete({ onSelect, excludeIds = [] }: { onSelect: (car
   return (
     <div className="relative">
       <div className="relative">
-        <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--color-ink-faint)]" />
+        <Search size={16} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--color-ink-faint)]" />
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => setFocused(true)}
           onBlur={() => setTimeout(() => setFocused(false), 150)}
-          placeholder="Search for your card…"
-          className="h-11 w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-elevated)] pl-10 pr-3 text-[14px] outline-none focus:border-[var(--color-accent)] focus:ring-2 focus:ring-[var(--color-accent)]/20"
+          placeholder="Search by card or issuer…"
+          aria-label="Search cards"
+          className={cn(inputClass, "pl-10 pr-3")}
         />
       </div>
       {focused && (
-        <div className="absolute z-20 mt-1.5 max-h-72 w-full overflow-y-auto rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-elevated)] p-1.5 shadow-[var(--shadow-popover)]">
+        <div className="absolute z-20 mt-2 max-h-80 w-full overflow-y-auto rounded-[16px] border border-[var(--color-border)] bg-[var(--color-bg-elevated)] p-1.5 shadow-[var(--shadow-popover)]">
           {results.length === 0 ? (
-            <p className="px-3 py-4 text-center text-[13px] text-[var(--color-ink-faint)]">No cards match &ldquo;{query}&rdquo;</p>
+            <p className="px-3 py-5 text-center text-[13px] text-[var(--color-ink-faint)]">No cards match &ldquo;{query}&rdquo;</p>
           ) : (
             results.map((card) => {
               const issuer = getIssuer(card.issuerId);
               return (
                 <button
                   key={card.id}
+                  type="button"
                   onMouseDown={() => {
                     onSelect(card);
                     setQuery("");
                   }}
-                  className={cn("flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-left hover:bg-[var(--color-bg-subtle)]")}
+                  className="flex w-full items-center gap-3 rounded-[10px] px-2.5 py-2 text-left transition-colors hover:bg-[var(--color-bg-subtle)]"
                 >
-                  <span>
-                    <span className="block text-[13.5px] font-medium text-[var(--color-ink)]">{card.name}</span>
+                  <CardFace card={card} size="sm" className="w-11 shrink-0" />
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-[13.5px] font-medium text-[var(--color-ink)]">{card.name}</span>
                     <span className="block text-[11.5px] text-[var(--color-ink-faint)]">{issuer?.name}</span>
                   </span>
-                  <span className="shrink-0 text-[11.5px] text-[var(--color-ink-faint)]">
-                    {card.annualFee === 0 ? "No fee" : `$${card.annualFee}/yr`}
+                  <span className="figure shrink-0 text-[11.5px] text-[var(--color-ink-faint)]">
+                    {card.annualFee === 0 ? "$0" : `$${card.annualFee}`}/yr
                   </span>
                 </button>
               );

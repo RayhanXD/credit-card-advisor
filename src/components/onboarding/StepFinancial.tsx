@@ -1,6 +1,6 @@
 "use client";
 
-import { StepHeading } from "@/components/onboarding/OnboardingShell";
+import { FieldGroup, StepHeading } from "@/components/onboarding/OnboardingShell";
 import { TextField } from "@/components/ui/TextField";
 import { RadioCardGroup } from "@/components/ui/RadioCardGroup";
 import { Slider } from "@/components/ui/Slider";
@@ -56,74 +56,76 @@ export function StepFinancial({
 
   return (
     <div>
-      <StepHeading eyebrow="Step 2 of 9" title="Tell us about your financial picture" subtitle="Only what materially improves your recommendations — nothing more." />
+      <StepHeading eyebrow="Financial picture" title="Tell us about your financial picture" subtitle="Only what materially improves your recommendations — nothing more." />
       <div className="space-y-6">
-        <TextField
-          label="What should we call you?"
-          value={profile.name}
-          onChange={(e) => onChange((p) => ({ ...p, name: e.target.value }))}
-          placeholder="Your name"
-        />
-
-        <div className="space-y-2">
-          <p className="text-[13px] font-medium text-[var(--color-ink)]">Age range</p>
-          <RadioCardGroup
-            columns={3}
-            options={AGE_OPTIONS}
-            value={f.ageRange}
-            onChange={(v) => onChange((p) => ({ ...p, financial: { ...p.financial, ageRange: v } }))}
+        <FieldGroup>
+          <TextField
+            label="What should we call you?"
+            value={profile.name}
+            onChange={(e) => onChange((p) => ({ ...p, name: e.target.value }))}
+            placeholder="Your name"
           />
-        </div>
 
-        <div className="space-y-2">
-          <p className="text-[13px] font-medium text-[var(--color-ink)]">Employment status</p>
-          <RadioCardGroup
-            columns={2}
-            options={EMPLOYMENT_OPTIONS}
-            value={f.employmentStatus}
-            onChange={(v) => onChange((p) => ({ ...p, financial: { ...p.financial, employmentStatus: v } }))}
+          <div className="space-y-2">
+            <p className="text-[13px] font-medium text-[var(--color-ink)]">Age range</p>
+            <RadioCardGroup
+              columns={3}
+              options={AGE_OPTIONS}
+              value={f.ageRange}
+              onChange={(v) => onChange((p) => ({ ...p, financial: { ...p.financial, ageRange: v } }))}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <p className="text-[13px] font-medium text-[var(--color-ink)]">Employment status</p>
+            <RadioCardGroup
+              columns={2}
+              options={EMPLOYMENT_OPTIONS}
+              value={f.employmentStatus}
+              onChange={(v) => onChange((p) => ({ ...p, financial: { ...p.financial, employmentStatus: v } }))}
+            />
+          </div>
+
+          <Slider
+            label="Approximate annual income"
+            min={0}
+            max={300000}
+            step={1000}
+            value={f.annualIncome}
+            onChange={(v) => onChange((p) => ({ ...p, financial: { ...p.financial, annualIncome: v } }))}
+            formatValue={(v) => formatCurrency(v)}
           />
-        </div>
 
-        <Slider
-          label="Approximate annual income"
-          min={0}
-          max={300000}
-          step={1000}
-          value={f.annualIncome}
-          onChange={(v) => onChange((p) => ({ ...p, financial: { ...p.financial, annualIncome: v } }))}
-          formatValue={(v) => formatCurrency(v)}
-        />
+          <div className="space-y-2">
+            <p className="text-[13px] font-medium text-[var(--color-ink)]">Housing situation</p>
+            <RadioCardGroup
+              columns={2}
+              options={HOUSING_OPTIONS}
+              value={f.housingStatus}
+              onChange={(v) => onChange((p) => ({ ...p, financial: { ...p.financial, housingStatus: v } }))}
+            />
+          </div>
 
-        <div className="space-y-2">
-          <p className="text-[13px] font-medium text-[var(--color-ink)]">Housing situation</p>
-          <RadioCardGroup
-            columns={2}
-            options={HOUSING_OPTIONS}
-            value={f.housingStatus}
-            onChange={(v) => onChange((p) => ({ ...p, financial: { ...p.financial, housingStatus: v } }))}
+          <Slider
+            label="Approximate monthly housing payment"
+            min={0}
+            max={6000}
+            step={50}
+            value={f.monthlyHousingPayment}
+            onChange={(v) => onChange((p) => ({ ...p, financial: { ...p.financial, monthlyHousingPayment: v } }))}
+            formatValue={(v) => formatCurrency(v)}
           />
-        </div>
 
-        <Slider
-          label="Approximate monthly housing payment"
-          min={0}
-          max={6000}
-          step={50}
-          value={f.monthlyHousingPayment}
-          onChange={(v) => onChange((p) => ({ ...p, financial: { ...p.financial, monthlyHousingPayment: v } }))}
-          formatValue={(v) => formatCurrency(v)}
-        />
-
-        <div className="space-y-2">
-          <p className="text-[13px] font-medium text-[var(--color-ink)]">Annual fee tolerance</p>
-          <RadioCardGroup
-            columns={2}
-            options={FEE_TOLERANCE_OPTIONS}
-            value={f.annualFeeTolerance}
-            onChange={(v) => onChange((p) => ({ ...p, financial: { ...p.financial, annualFeeTolerance: v } }))}
-          />
-        </div>
+          <div className="space-y-2">
+            <p className="text-[13px] font-medium text-[var(--color-ink)]">Annual fee tolerance</p>
+            <RadioCardGroup
+              columns={2}
+              options={FEE_TOLERANCE_OPTIONS}
+              value={f.annualFeeTolerance}
+              onChange={(v) => onChange((p) => ({ ...p, financial: { ...p.financial, annualFeeTolerance: v } }))}
+            />
+          </div>
+        </FieldGroup>
 
         <Button size="lg" className="w-full" onClick={onNext} disabled={!canContinue} iconRight={<ArrowRight size={17} />}>
           Continue

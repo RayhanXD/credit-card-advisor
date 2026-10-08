@@ -37,14 +37,14 @@ export function StepGoals({
   return (
     <div>
       <StepHeading
-        eyebrow="Step 7 of 9"
+        eyebrow="Goals"
         title="What are you trying to accomplish?"
         subtitle="Pick as many as apply. The first one you select becomes your top priority."
       />
       <div className="space-y-6">
         {GROUPS.map((group) => (
           <div key={group} className="space-y-2">
-            <p className="text-[12px] font-medium uppercase tracking-wide text-[var(--color-ink-faint)]">{group}</p>
+            <p className="font-mono text-[10.5px] uppercase tracking-[0.12em] text-[var(--color-ink-faint)]">{group}</p>
             <div className="flex flex-wrap gap-2">
               {GOAL_DEFINITIONS.filter((g) => g.group === group).map((g) => {
                 const idx = selectedIds.indexOf(g.id);
@@ -53,15 +53,16 @@ export function StepGoals({
                   <button
                     key={g.id}
                     onClick={() => toggleGoal(g.id)}
+                    aria-pressed={selected}
                     className={cn(
-                      "flex items-center gap-1.5 rounded-full border px-3.5 py-2 text-[13px] font-medium transition-colors",
+                      "flex items-center gap-2 rounded-[11px] border px-3.5 py-2 text-[13px] font-medium transition-[border-color,background-color,box-shadow]",
                       selected
-                        ? "border-[var(--color-ink)] bg-[var(--color-ink)] text-[var(--color-bg)]"
-                        : "border-[var(--color-border)] text-[var(--color-ink-soft)] hover:bg-[var(--color-bg-subtle)]"
+                        ? "border-[var(--color-mint)] bg-[var(--color-accent-soft)] text-[var(--color-ink)] shadow-[0_0_0_3px_color-mix(in_srgb,var(--color-mint)_18%,transparent)]"
+                        : "border-[var(--color-border)] bg-[var(--color-bg-elevated)] text-[var(--color-ink-soft)] hover:border-[var(--color-border-strong)] hover:text-[var(--color-ink)]"
                     )}
                   >
                     {selected && (
-                      <span className="flex h-4 w-4 items-center justify-center rounded-full bg-[var(--color-bg)] text-[10px] font-bold text-[var(--color-ink)]">
+                      <span className="figure flex h-[18px] min-w-[18px] items-center justify-center rounded-[5px] bg-[var(--color-ink)] px-1 text-[10px] font-bold text-[var(--color-mint)]">
                         {idx + 1}
                       </span>
                     )}
@@ -74,10 +75,10 @@ export function StepGoals({
         ))}
 
         {targetGoal && (
-          <div className="space-y-2 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-subtle)] p-4">
+          <div className="space-y-3 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-bg-elevated)] p-5 shadow-[var(--shadow-card)]">
             <p className="text-[13px] font-medium text-[var(--color-ink)]">Which card do you have in mind?</p>
             {targetGoal.targetCardId ? (
-              <div className="flex items-center justify-between rounded-lg bg-[var(--color-bg-elevated)] px-3.5 py-2.5">
+              <div className="flex items-center justify-between rounded-[12px] bg-[var(--color-bg-subtle)] px-3.5 py-2.5">
                 <span className="text-[13.5px] font-medium">{getCard(targetGoal.targetCardId)?.name}</span>
                 <button
                   onClick={() =>

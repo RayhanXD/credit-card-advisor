@@ -1,12 +1,13 @@
-import { LegalLayout, LegalSection, Placeholder } from "@/components/legal/LegalLayout";
+import { LegalLayout, LegalSection } from "@/components/legal/LegalLayout";
+import { brandName, supportEmail } from "@/lib/site";
 
-export const metadata = { title: "Refund Policy — Strata" };
+export const metadata = { title: `Refund Policy — ${brandName}` };
 
 export default function RefundPolicyPage() {
   return (
     <LegalLayout title="Refund Policy" updated="September 2026">
       <p>
-        This Refund Policy applies to any paid Strata subscription (for example, Strata Premium). The free tier of Strata
+        This Refund Policy applies to any paid {brandName} subscription (for example, {brandName} Premium). The free tier of {brandName}
         does not involve any payment and this policy does not apply to it.
       </p>
 
@@ -26,7 +27,7 @@ export default function RefundPolicyPage() {
 
       <LegalSection heading="3. How to Request a Refund">
         <p>
-          Email <Placeholder>[YOUR EMAIL]</Placeholder> with the email address on your account. We aim to process eligible
+          Email {supportEmail} with the email address on your account. We aim to process eligible
           refunds within 5 business days to your original payment method.
         </p>
       </LegalSection>
@@ -39,7 +40,7 @@ export default function RefundPolicyPage() {
       </LegalSection>
 
       <LegalSection heading="5. Contact Us">
-        <p>Questions about billing or refunds can be sent to <Placeholder>[YOUR EMAIL]</Placeholder>.</p>
+        <p>Questions about billing or refunds can be sent to {supportEmail}.</p>
       </LegalSection>
     </LegalLayout>
   );

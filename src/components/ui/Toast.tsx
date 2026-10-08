@@ -2,7 +2,7 @@
 
 import { createContext, useCallback, useContext, useState, type ReactNode } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { CheckCircle2, Info, AlertTriangle, X } from "lucide-react";
+import { CircleCheck, Info, TriangleAlert, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type ToastTone = "success" | "info" | "warning";
@@ -26,9 +26,9 @@ export function useToast() {
 }
 
 const ICONS: Record<ToastTone, ReactNode> = {
-  success: <CheckCircle2 size={18} className="text-[var(--color-success)]" />,
-  info: <Info size={18} className="text-[var(--color-accent)]" />,
-  warning: <AlertTriangle size={18} className="text-[var(--color-warning)]" />,
+  success: <CircleCheck size={17} className="text-[var(--color-mint)]" />,
+  info: <Info size={17} className="text-[var(--color-teal-vivid)]" />,
+  warning: <TriangleAlert size={17} className="text-[var(--color-gold-vivid)]" />,
 };
 
 export function ToastProvider({ children }: { children: ReactNode }) {
@@ -45,7 +45,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   return (
     <ToastContext.Provider value={{ show }}>
       {children}
-      <div className="pointer-events-none fixed bottom-6 right-6 z-[200] flex flex-col gap-2">
+      <div className="pointer-events-none fixed bottom-24 left-4 right-4 z-[200] flex flex-col items-center gap-2 lg:bottom-6 lg:left-auto lg:right-24 lg:items-end">
         <AnimatePresence>
           {toasts.map((t) => (
             <motion.div
@@ -54,12 +54,12 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               className={cn(
-                "pointer-events-auto flex items-center gap-2.5 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-elevated)] px-4 py-3 shadow-[var(--shadow-popover)]"
+                "pointer-events-auto flex items-center gap-3 rounded-[14px] bg-[var(--color-ink)] py-3 pl-4 pr-3 text-[var(--color-bg-elevated)] shadow-[var(--shadow-popover)]"
               )}
             >
               {ICONS[t.tone]}
-              <span className="text-[13px] text-[var(--color-ink)]">{t.message}</span>
-              <button onClick={() => dismiss(t.id)} aria-label="Dismiss notification" className="ml-2 text-[var(--color-ink-faint)] hover:text-[var(--color-ink)]">
+              <span className="text-[13px] font-medium">{t.message}</span>
+              <button onClick={() => dismiss(t.id)} aria-label="Dismiss notification" className="ml-1 rounded-md p-1 opacity-60 transition-opacity hover:opacity-100">
                 <X size={14} />
               </button>
             </motion.div>
