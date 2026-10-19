@@ -34,7 +34,7 @@ export function SiteFooter() {
           <p>
             {operatorName} · {businessAddress} · {supportEmail}
           </p>
-          <p>Icons by Lucide (ISC). Typefaces: Geist, Bricolage Grotesque (SIL OFL).</p>
+          <p>Icons by Lucide (ISC). Typefaces: Manrope, Inter (SIL OFL).</p>
         </div>
       </div>
     </footer>

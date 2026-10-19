@@ -26,7 +26,7 @@ export function Logo({ size = 30, className, showName = true }: { size?: number;
   return (
     <span className={cn("inline-flex items-center gap-2.5", className)}>
       <LogoMark size={size} />
-      {showName && <span className="font-display text-[17px] font-semibold tracking-[-0.02em] text-[var(--color-ink)]">{brandName}</span>}
+      {showName && <span className="font-display text-[18px] font-bold tracking-[-0.02em] text-[var(--color-ink)]">{brandName}</span>}
     </span>
   );
 }

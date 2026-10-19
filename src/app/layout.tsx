@@ -1,22 +1,18 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, Geist, Geist_Mono } from "next/font/google";
+import { Inter, Manrope } from "next/font/google";
 import "./globals.css";
 import { CookieConsentBanner } from "@/components/legal/CookieConsentBanner";
 import { SessionProvider } from "@/components/auth/SessionProvider";
 import { brandName } from "@/lib/site";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// Two families: Manrope for headlines, Inter for body copy and financial data.
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-const display = Bricolage_Grotesque({
-  variable: "--font-bricolage",
+const manrope = Manrope({
+  variable: "--font-manrope",
   subsets: ["latin"],
 });
 
@@ -37,7 +33,7 @@ const themeInitScript = `
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} ${display.variable} h-full antialiased`} suppressHydrationWarning>
+    <html lang="en" className={`${inter.variable} ${manrope.variable} h-full antialiased`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>

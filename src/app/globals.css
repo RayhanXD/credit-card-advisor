@@ -181,9 +181,11 @@
   --color-warning-soft: var(--color-warning-soft);
   --color-danger: var(--color-danger);
   --color-danger-soft: var(--color-danger-soft);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-display: var(--font-bricolage);
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-manrope);
+  /* Kickers and labels use the `font-mono` utility but render in Inter; real code uses `font-code`. */
+  --font-mono: var(--font-inter);
+  --font-code: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 }
 
 * {
@@ -201,7 +203,6 @@ html[data-theme="dark"] {
 body {
   background: var(--color-canvas);
   color: var(--color-ink);
-  font-feature-settings: "cv11", "ss01";
 }
 
 h1,
@@ -242,9 +243,9 @@ p {
   font-variant-numeric: tabular-nums;
 }
 
-/* Financial figures: mono with tabular numerals, slightly tightened. */
+/* Financial figures: Inter with tabular numerals, slightly tightened. */
 .figure {
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-family: var(--font-inter), system-ui, sans-serif;
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.02em;
 }

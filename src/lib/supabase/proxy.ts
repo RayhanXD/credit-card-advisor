@@ -19,6 +19,7 @@ const PUBLIC_PATHS = new Set([
 function isPublicPath(pathname: string) {
   if (PUBLIC_PATHS.has(pathname)) return true;
   if (pathname.startsWith("/auth/")) return true;
+  if (pathname === "/design" || pathname.startsWith("/design/")) return true;
   return false;
 }
 

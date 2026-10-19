@@ -303,7 +303,7 @@ Seed data currently includes **20 cards across 8 issuers** (Chase, Capital One, 
 - Required env vars: see `.env.example` (Supabase URL, publishable key, optional service-role key; legal-identity variables; demo-profile flag)
 - Animation: framer-motion
 - Icons: lucide-react (ISC license)
-- Fonts: Geist and Geist Mono (Vercel, SIL Open Font License) plus a display face for headings
+- Fonts: Manrope Semibold for headlines and Inter Regular/Medium for body copy and financial data (both SIL Open Font License)
 - No external API calls beyond Supabase; no credit bureau integration
 - Node 20.19+ required (`.node-version` pins 22)
 - Deployment target: not yet decided (Vercel is the natural fit given the framework)

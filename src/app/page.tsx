@@ -86,13 +86,13 @@ export default function LandingPage() {
           <Link href="/" aria-label="Home">
             <Logo />
           </Link>
-          <nav className="hidden items-center gap-7 text-[13.5px] font-medium text-[var(--color-ink-soft)] md:flex">
-            <Link href="#how" className="transition-colors hover:text-[var(--color-ink)]">How it works</Link>
-            <Link href="#explain" className="transition-colors hover:text-[var(--color-ink)]">Transparency</Link>
-            <Link href="#advisor" className="transition-colors hover:text-[var(--color-ink)]">Card Advisor</Link>
+          <nav className="hidden items-center gap-7 text-[14px] font-semibold text-[var(--color-ink)] md:flex">
+            <Link href="#how" className="transition-colors hover:text-[var(--color-accent)]">How it works</Link>
+            <Link href="#explain" className="transition-colors hover:text-[var(--color-accent)]">Transparency</Link>
+            <Link href="#advisor" className="transition-colors hover:text-[var(--color-accent)]">Card Advisor</Link>
           </nav>
           <div className="flex items-center gap-2">
-            <Link href="/login" className="rounded-[10px] px-3 py-1.5 text-[13.5px] font-medium text-[var(--color-ink-soft)] transition-colors hover:text-[var(--color-ink)]">
+            <Link href="/login" className="rounded-[10px] px-3 py-1.5 text-[14px] font-semibold text-[var(--color-ink)] transition-colors hover:text-[var(--color-accent)]">
               Sign in
             </Link>
             <PrimaryCTA label="Get started" size="sm" />
@@ -110,7 +110,7 @@ export default function LandingPage() {
           <div className="relative mx-auto grid max-w-6xl items-center gap-14 px-5 pb-20 pt-14 lg:grid-cols-[1.05fr_1fr] lg:px-8 lg:pb-28 lg:pt-20">
             <div className="animate-rise">
               <Kicker>A credit-card strategist, not a comparison site</Kicker>
-              <h1 className="mt-5 font-display text-[44px] font-semibold leading-[0.98] tracking-[-0.035em] text-[var(--color-ink)] sm:text-[56px] lg:text-[68px]">
+              <h1 className="mt-5 font-display text-[44px] font-extrabold leading-[0.98] tracking-[-0.035em] text-[var(--color-ink)] sm:text-[56px] lg:text-[68px]">
                 Your cards should work <span className="relative whitespace-nowrap text-[var(--color-accent)]">together<svg className="absolute -bottom-2 left-0 w-full" height="10" viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true"><path d="M2 7 C 50 2, 120 2, 198 6" stroke="var(--color-gold-vivid)" strokeWidth="3" fill="none" strokeLinecap="round" /></svg></span>.
               </h1>
               <p className="mt-7 max-w-lg text-[17px] leading-relaxed text-[var(--color-ink-soft)]">
